@@ -1,1 +1,2 @@
-Installation
+Type `make install` for installation.
+

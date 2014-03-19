@@ -63,26 +63,17 @@ let targets =
     files
        
 let () =
-  let out_opts = [Open_wronly; Open_creat; Open_excl; Open_text] in
-  let out_file =
-    match rev (split (regexp "/") (Sys.getcwd())) with
-      | hd::tl -> 
-	"/" ^ (String.concat "/" (rev (((String.capitalize hd)^".ml")::hd::tl)))
-      | _ -> failwith "unreachable" in
-  let out =
-    open_out_gen out_opts 438 out_file in
-  let write_module f =
+  let print_module f =
     let module_name = String.capitalize (basename f) in
     try
       let inp = open_in f in
       try
-	output_string out ("module "^module_name^" = struct \n");
+	print_endline ("module "^module_name^" = struct");
 	while true do
-	  output_string out ("  " ^ (input_line inp) ^ "\n")
+	  print_endline ("  " ^ (input_line inp))
 	done
       with End_of_file -> 
-	output_string out "end\n\n";
+	print_endline "end\n";
 	close_in inp;
     with _ -> () in
-  List.iter write_module targets;
-  close_out out
+  List.iter print_module targets;
